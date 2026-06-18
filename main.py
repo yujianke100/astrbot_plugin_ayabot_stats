@@ -15,6 +15,7 @@ Ayabot 礼物统计查询插件
 
 from __future__ import annotations
 
+import asyncio
 import json
 import os
 from pathlib import Path
@@ -412,7 +413,9 @@ class AyabotStatsPlugin(Star):
             # 仅图片
             try:
                 img_data = self._build_image_data(data, label)
-                url = await self.html_render(GIFT_CARD_HTML, img_data)
+                url = await asyncio.wait_for(
+                    self.html_render(GIFT_CARD_HTML, img_data), timeout=15
+                )
                 yield event.image_result(url)
             except Exception as e:
                 logger.warning(f"图片渲染失败，回退到文字: {e}")
@@ -422,7 +425,9 @@ class AyabotStatsPlugin(Star):
             yield event.plain_result(self._build_text_reply(data, label))
             try:
                 img_data = self._build_image_data(data, label)
-                url = await self.html_render(GIFT_CARD_HTML, img_data)
+                url = await asyncio.wait_for(
+                    self.html_render(GIFT_CARD_HTML, img_data), timeout=15
+                )
                 yield event.image_result(url)
             except Exception as e:
                 logger.warning(f"图片渲染失败: {e}")
