@@ -18,6 +18,7 @@ from __future__ import annotations
 import asyncio
 import json
 import os
+import time
 from pathlib import Path
 from typing import Optional
 
@@ -512,9 +513,14 @@ class AyabotStatsPlugin(Star):
             async with httpx.AsyncClient(timeout=30) as client:
                 resp = await client.post(local_url, data={"html": html})
                 resp.raise_for_status()
-                # 上传图片到 AstrBot 并获取 URL
-                url = await self.upload_image(resp.content)
-                return url
+                img_bytes = resp.content
+            # 保存到临时文件
+            cache_dir = _get_data_dir() / "ayabot_stats_cache"
+            cache_dir.mkdir(parents=True, exist_ok=True)
+            ts = int(time.time())
+            fp = cache_dir / f"gift_{data.get('uid','?')}_{ts}.png"
+            fp.write_bytes(img_bytes)
+            return str(fp)
         else:
             # 网络 T2I：使用 AstrBot 内置 html_render
             url = await asyncio.wait_for(
