@@ -1,19 +1,19 @@
 {
   "api_url": {
     "description": "Ayabot 服务地址",
-    "hint": "例如 http://192.168.1.100:19810",
+    "hint": "例如 http://192.168.1.100:19810，在 Ayabot WebUI → 数据管理 → API 外部接口中查看完整地址",
     "type": "string",
     "default": ""
   },
   "api_token": {
-    "description": "Ayabot API Token",
-    "hint": "在 Ayabot config.yaml 中 web_ui.api_token 设置的值",
+    "description": "Ayabot API 密钥",
+    "hint": "在 Ayabot WebUI → 数据管理 → 开启 API → 复制密钥",
     "type": "string",
     "default": ""
   },
   "room_id": {
-    "description": "Ayabot 房间号（多房间模式下使用）",
-    "hint": "不填则使用默认房间",
+    "description": "Ayabot 房间号",
+    "hint": "必填，在 Ayabot WebUI → 数据管理 → API 地址中可看到 room_id=xxx",
     "type": "string",
     "default": ""
   },
