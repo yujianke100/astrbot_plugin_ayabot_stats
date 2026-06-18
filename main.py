@@ -78,11 +78,15 @@ body{background:#fff;display:flex;justify-content:center;padding:0;}
 .box-card .bc-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
 .box-card .bc-hdr .bc-name{font-size:13px;font-weight:600;color:#2d1b69;}
 .box-card .bc-hdr .bc-info{font-size:12px;font-weight:600;}
-.box-card .bc-item{display:flex;align-items:center;gap:8px;padding:3px 0;}
-.box-card .bc-item .bi-icon{width:16px;height:16px;border-radius:3px;object-fit:contain;flex-shrink:0;}
-.box-card .bc-item .bi-name{flex:1;font-size:11px;color:#5a4570;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.box-card .bc-item .bi-num{font-size:11px;color:#2d1b69;white-space:nowrap;font-weight:500;}
-.box-card .bc-item .bi-profit{font-size:11px;text-align:right;min-width:48px;font-weight:700;padding:1px 6px;border-radius:4px;}
+.box-card .bc-info-cnt{color:#2d1b69;}
+/* 盲盒明细网格 - 2列 */
+.box-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px;}
+.box-grid .bg-item{display:flex;align-items:center;gap:6px;padding:5px 6px;background:rgba(120,80,200,0.03);border-radius:6px;}
+.box-grid .bg-item .bg-icon{width:18px;height:18px;border-radius:4px;object-fit:contain;flex-shrink:0;}
+.box-grid .bg-item .bg-info{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;}
+.box-grid .bg-item .bg-info .bg-name{font-size:11px;color:#5a4570;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.box-grid .bg-item .bg-info .bg-meta{display:flex;justify-content:space-between;align-items:center;font-size:10px;color:#8b7dad;margin-top:1px;}
+.box-grid .bg-item .bg-info .bg-meta .bg-profit{font-weight:700;padding:1px 5px;border-radius:3px;}
 .profit-plus{color:#10b981;}
 .profit-minus{color:#ef4444;}
 .profit-bg-plus{background:rgba(16,185,129,0.12);border-color:rgba(16,185,129,0.25)!important;}
@@ -140,19 +144,22 @@ body{background:#fff;display:flex;justify-content:center;padding:0;}
 
 {% if blind_details %}<div class="divider"></div><div class="section-title">📦 盲盒明细</div>
 {% for bd in blind_details %}
-<div class="box-card {{ 'profit-bg-plus' if bd.profit >= 0 else 'profit-bg-minus' }}">
+<div class="box-card">
   <div class="bc-hdr">
     <span class="bc-name">{{ bd.box_name }}</span>
-    <span class="bc-info {{ 'profit-plus' if bd.profit >= 0 else 'profit-minus' }}">×{{ bd.count }} {{ '%+d'|format(bd.profit) }}</span>
+    <span class="bc-info"><span class="bc-info-cnt">×{{ bd.count }}</span> <span class="{{ 'profit-plus' if bd.profit >= 0 else 'profit-minus' }}">{{ '%+d'|format(bd.profit) }}</span></span>
   </div>
+{% if bd.get('items',[]) %}
+<div class="box-grid">
 {% for item in bd.get('items',[]) %}
-  <div class="bc-item">
-    {% if item.icon %}<img class="bi-icon" src="{{ item.icon }}" alt="" onerror="this.style.display='none'">{% else %}<div style="width:16px"></div>{% endif %}
-    <span class="bi-name">{{ item.name }}</span>
-    <span class="bi-num">×{{ item.count }}</span>
-    <span class="bi-profit {{ 'profit-bg-plus' if item.profit >= 0 else 'profit-bg-minus' }} {{ 'profit-plus' if item.profit >= 0 else 'profit-minus' }}">{{ '%+d'|format(item.profit) }}</span>
+  <div class="bg-item">
+    {% if item.icon %}<img class="bg-icon" src="{{ item.icon }}" alt="" onerror="this.style.display='none'">{% else %}<div style="width:18px"></div>{% endif %}
+    <div class="bg-info">
+      <div class="bg-name">{{ item.name }}</div>
+      <div class="bg-meta"><span>×{{ item.count }}</span><span class="bg-profit {{ 'profit-bg-plus' if item.profit >= 0 else 'profit-bg-minus' }} {{ 'profit-plus' if item.profit >= 0 else 'profit-minus' }}">{{ '%+d'|format(item.profit) }}</span></div>
+    </div>
   </div>
-{% endfor %}</div>
+{% endfor %}</div>{% endif %}</div>
 {% endfor %}{% endif %}
 
 <div class="footer">Ayabot 礼物统计 · {{ label }}</div>
