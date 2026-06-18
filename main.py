@@ -215,11 +215,11 @@ class AyabotStatsPlugin(Star):
             # 盲盒名称明细
             blind_details = blind.get("details", [])
             if blind_details:
-                parts = []
-                for d in blind_details:
-                    profit_str = f"{'' if d['profit_yuan'] < 0 else '+'}{d['profit_yuan']}"
-                    parts.append(f"{d['name']}x{d['count']}({profit_str})")
-                lines.append(f"📋 明细: {'、'.join(parts)}")
+                for bd in blind_details:
+                    items_str = "、".join([f"{i['name']}x{i['count']}" for i in bd.get("items", [])])
+                    profit_str = f"{'' if bd['profit_yuan'] < 0 else '+'}{bd['profit_yuan']}"
+                    lines.append(f"  📦 {bd['box_name']}: {bd['count']}个({profit_str})")
+                    lines.append(f"    └ {items_str}")
         else:
             lines.append(f"━━━━━━━━━━━━━━━━━━")
             lines.append("📦 无盲盒记录")
