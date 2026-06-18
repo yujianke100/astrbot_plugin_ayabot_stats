@@ -41,13 +41,46 @@ class AyabotStatsPlugin(Star):
         self.config = config
 
         # 按群配置列表（来自 _conf_schema.json template_list）
+        self._group_configs: dict[str, dict] = {}
         self._load_groups_from_config()
 
-    # ═══════════════════════════════════════════
-    #  绑定数据持久化（全局）
-    # ═══════════════════════════════════════════
+        # 绑定数据
+        bindings_rel = str(config.get("bindings_file", "ayabot_bindings.json"))
+        self.bindings_path = _get_data_dir() / bindings_rel
+        self.bindings_path.parent.mkdir(parents=True, exist_ok=True)
+        self._bindings: dict[str, int] = {}
+        self._load_bindings()
 
-    def _load_bindings(self) -> None:
+    def _load_groups_from_config(self) -> None:
+        """从插件配置加载群配置列表。"""
+        raw = self.config.get("groups", [])
+        if isinstance(raw, list):
+            self._group_configs = {}
+            for entry in raw:
+                gid = str(entry.get("group_id", "")).strip()
+                if gid:
+                    self._group_configs[gid] = {
+                        "api_url": str(entry.get("api_url", "")).rstrip("/"),
+                        "api_token": str(entry.get("api_token", "")),
+                        "room_id": str(entry.get("room_id", "")),
+                    }
+            logger.info(f"已加载 {len(self._group_configs)} 个群的 API 配置")
+        else:
+            self._group_configs = {}
+
+    def _save_groups_to_config(self) -> None:
+        """将群配置列表写回插件配置并持久化。"""
+        entries = []
+        for gid, cfg in self._group_configs.items():
+            entries.append({
+                "__template_key": "group_config",
+                "group_id": gid,
+                "api_url": cfg["api_url"],
+                "api_token": cfg["api_token"],
+                "room_id": cfg["room_id"],
+            })
+        self.config["groups"] = entries
+        self.config.save_config()
         if self.bindings_path.exists():
             try:
                 raw = json.loads(self.bindings_path.read_text(encoding="utf-8"))
@@ -102,12 +135,11 @@ class AyabotStatsPlugin(Star):
     # ═══════════════════════════════════════════
 
     async def _query_user_stats(self, uid: int, period: str, group_id: str = "") -> Optional[dict]:
-        """调用 Ayabot API 查询用户统计（按群配置）。"""
-        cfg = self._get_group_config(group_id) if group_id else {
-            "api_url": self.default_api_url,
-            "api_token": self.default_api_token,
-            "room_id": self.default_room_id,
-        }
+        """调用 Ayabot API 查询（按群配置）。"""
+        cfg = self._get_group_config(group_id) if group_id else None
+        if not cfg:
+            logger.error(f"群 {group_id} 未配置 API")
+            return None
 
         api_url = cfg["api_url"]
         api_token = cfg["api_token"]
