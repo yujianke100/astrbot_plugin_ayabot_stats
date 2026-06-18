@@ -43,7 +43,7 @@ body{background:#fff;display:flex;justify-content:center;padding:0;}
 .user-header{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
 .avatar-wrap{position:relative;width:48px;height:48px;flex-shrink:0;}
 .avatar-wrap img.face{width:48px;height:48px;border-radius:50%;object-fit:cover;display:block;}
-.avatar-wrap .guard-frame{position:absolute;top:-4px;left:-4px;width:56px;height:56px;pointer-events:none;}
+.avatar-wrap img.frame-img{position:absolute;top:-4px;left:-4px;width:56px;height:56px;pointer-events:none;}
 .user-info{flex:1;min-width:0;}
 .user-info .uname{font-size:17px;font-weight:700;color:#2d1b69;line-height:1.3;}
 .user-info .meta{font-size:12px;color:#8b7dad;margin-top:1px;}
@@ -98,14 +98,7 @@ body{background:#fff;display:flex;justify-content:center;padding:0;}
 <div class="user-header">
   <div class="avatar-wrap">
     {% if avatar %}<img class="face" src="{{ avatar }}" alt="" onerror="this.style.display='none'">{% endif %}
-    {% if guard_level > 0 %}<svg class="guard-frame" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-      {% if guard_level == 3 %}<circle cx="32" cy="32" r="30" stroke="#c084fc" stroke-width="2" fill="none" opacity="0.8"/>
-      <circle cx="32" cy="32" r="28" stroke="#a78bfa" stroke-width="1" fill="none" opacity="0.4"/>
-      {% elif guard_level == 2 %}<circle cx="32" cy="32" r="30" stroke="#a78bfa" stroke-width="2" fill="none" opacity="0.8"/>
-      <circle cx="32" cy="32" r="28" stroke="#8b5cf6" stroke-width="1" fill="none" opacity="0.4"/>
-      {% else %}<circle cx="32" cy="32" r="30" stroke="#f59e0b" stroke-width="2" fill="none" opacity="0.8"/>
-      <circle cx="32" cy="32" r="28" stroke="#d97706" stroke-width="1" fill="none" opacity="0.4"/>
-      {% endif %}</svg>{% endif %}
+    {% if guard_level == 3 %}<img class="frame-img" src="https://i0.hdslb.com/bfs/live/80f732943cc3367029df65e267960d56736a82ee.png" alt="" onerror="this.style.display='none'">{% endif %}
   </div>
   <div class="user-info">
     <div class="uname">{{ uname }}</div>
