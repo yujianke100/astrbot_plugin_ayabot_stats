@@ -17,7 +17,7 @@ import httpx
 
 from astrbot.api import AstrBotConfig, logger
 from astrbot.api.event import filter, AstrMessageEvent
-from astrbot.api.star import Context, Star
+from astrbot.api.star import Context, Star, register
 
 
 def _get_data_dir() -> Path:
@@ -26,6 +26,7 @@ def _get_data_dir() -> Path:
     return Path(data_dir).resolve()
 
 
+@register("astrbot_plugin_ayabot_stats", "Ayabot", "Ayabot 直播间礼物统计查询插件", "1.0.0")
 class AyabotStatsPlugin(Star):
     def __init__(self, context: Context, config: AstrBotConfig) -> None:
         super().__init__(context)
