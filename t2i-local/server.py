@@ -18,17 +18,10 @@ _semaphore = asyncio.Semaphore(2)  # 最多 2 个并发渲染
 async def startup():
     global _browser
     p = await async_playwright().start()
-    exec_path = os.environ.get("PLAYWRIGHT_CHROMIUM_EXECUTABLE")
-    if exec_path and Path(exec_path).exists():
-        _browser = await p.chromium.launch(
-            headless=True, executable_path=exec_path,
-            args=["--no-sandbox", "--disable-setuid-sandbox"],
-        )
-    else:
-        _browser = await p.chromium.launch(
-            headless=True,
-            args=["--no-sandbox", "--disable-setuid-sandbox"],
-        )
+    _browser = await p.chromium.launch(
+        headless=True,
+        args=["--no-sandbox", "--disable-setuid-sandbox"],
+    )
 
 
 @app.post("/text2img")
