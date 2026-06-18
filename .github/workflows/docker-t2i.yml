@@ -7,6 +7,10 @@ on:
       - "t2i-local/**"
       - ".github/workflows/docker-t2i.yml"
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
