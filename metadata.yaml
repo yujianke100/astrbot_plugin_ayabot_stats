@@ -6,7 +6,7 @@ desc: |
   群成员可绑定自己的 B站 UID，然后通过指令查询本日/本周/本月/全部记录的礼物投喂情况、盲盒数量和盈亏。
 author: Ayabot
 version: "1.0.0"
-repo: https://github.com/your-repo/astrbot_plugin_ayabot_stats
+repo: https://github.com/yujianke100/astrbot_plugin_ayabot_stats
 support_platforms:
   - aiocqhttp
   - qq_official
