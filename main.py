@@ -67,26 +67,26 @@ body{background:#fff;display:flex;justify-content:center;padding:0;}
 .blind-card .bc-profit .bc-profit-val{font-weight:700;}
 /* 礼物网格 - 2列 */
 .gift-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px;}
-.gift-item{display:flex;align-items:center;gap:6px;padding:6px 8px;background:rgba(120,80,200,0.02);border-radius:6px;}
+.gift-item{display:flex;align-items:center;gap:6px;padding:6px 8px;background:rgba(120,80,200,0.04);border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,0.06);}
 .gift-item .gift-icon{width:22px;height:22px;border-radius:4px;object-fit:contain;flex-shrink:0;}
-.gift-item .gift-info{flex:1;min-width:0;}
+.gift-item .gift-info{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;}
 .gift-item .gift-info .gift-name{color:#4a3580;font-weight:500;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.gift-item .gift-info .gift-meta{display:flex;justify-content:space-between;font-size:11px;color:#8b7dad;margin-top:1px;}
+.gift-item .gift-info .gift-meta{display:flex;justify-content:space-between;align-items:center;font-size:11px;color:#8b7dad;margin-top:1px;}
 .gift-item .gift-info .gift-meta .gift-value{color:#7c3aed;font-weight:600;}
 /* 盲盒明细卡片 */
-.box-card{border-radius:10px;padding:10px 12px;margin-bottom:6px;border:1px solid rgba(0,0,0,0.06);}
+.box-card{border-radius:10px;padding:10px 12px;margin-bottom:6px;border:1px solid rgba(0,0,0,0.06);box-shadow:0 1px 3px rgba(0,0,0,0.06);}
 .box-card .bc-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
 .box-card .bc-hdr .bc-name{font-size:13px;font-weight:600;color:#2d1b69;}
 .box-card .bc-hdr .bc-info{font-size:12px;font-weight:600;}
-.box-card .bc-item{display:flex;align-items:center;gap:6px;padding:3px 0;}
+.box-card .bc-item{display:flex;align-items:center;gap:8px;padding:3px 0;}
 .box-card .bc-item .bi-icon{width:16px;height:16px;border-radius:3px;object-fit:contain;flex-shrink:0;}
 .box-card .bc-item .bi-name{flex:1;font-size:11px;color:#5a4570;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.box-card .bc-item .bi-num{font-size:10px;color:#8b7dad;white-space:nowrap;}
-.box-card .bc-item .bi-profit{font-size:11px;text-align:right;min-width:40px;font-weight:600;}
+.box-card .bc-item .bi-num{font-size:11px;color:#2d1b69;white-space:nowrap;font-weight:500;}
+.box-card .bc-item .bi-profit{font-size:11px;text-align:right;min-width:48px;font-weight:700;padding:1px 6px;border-radius:4px;}
 .profit-plus{color:#10b981;}
 .profit-minus{color:#ef4444;}
-.profit-bg-plus{background:rgba(16,185,129,0.1);border-color:rgba(16,185,129,0.2)!important;}
-.profit-bg-minus{background:rgba(239,68,68,0.08);border-color:rgba(239,68,68,0.15)!important;}
+.profit-bg-plus{background:rgba(16,185,129,0.12);border-color:rgba(16,185,129,0.25)!important;}
+.profit-bg-minus{background:rgba(239,68,68,0.1);border-color:rgba(239,68,68,0.2)!important;}
 .footer{text-align:center;font-size:10px;color:#c0b0d8;margin-top:12px;padding-top:8px;border-top:1px solid rgba(120,80,200,0.08);}
 </style></head><body><div class="card">
 <div class="user-header">
@@ -119,10 +119,9 @@ body{background:#fff;display:flex;justify-content:center;padding:0;}
     <span class="bc-title">🎲 盲盒</span>
     <span class="bc-count">共 {{ blind_count }} 个</span>
   </div>
-  <div class="bc-value">{{ blind_cost }}</div>
+  <div class="bc-value {{ 'profit-plus' if blind_profit >= 0 else 'profit-minus' }}">{{ '%+d'|format(blind_profit) }}电池</div>
   <div class="bc-profit">
-    盈亏 <span class="{{ 'profit-plus' if blind_profit >= 0 else 'profit-minus' }} bc-profit-val">{{ '%+d'|format(blind_profit) }}</span>
-    · 成本 {{ blind_cost }} / 产出 {{ blind_actual }}
+    成本 {{ blind_cost }} · 产出 {{ blind_actual }}
   </div>
 </div>
 {% endif %}
@@ -134,7 +133,7 @@ body{background:#fff;display:flex;justify-content:center;padding:0;}
   {% if d.icon %}<img class="gift-icon" src="{{ d.icon }}" alt="" onerror="this.style.display='none'">{% else %}<div style="width:22px"></div>{% endif %}
   <div class="gift-info">
     <div class="gift-name">{{ d.name }}</div>
-    <div class="gift-meta"><span>×{{ d.count }}</span><span class="gift-value">{{ d.value }}</span></div>
+    <div class="gift-meta"><span>×{{ d.count }}</span><span class="gift-value">{{ d.value }}电池</span></div>
   </div>
 </div>
 {% endfor %}</div>{% endif %}
@@ -151,7 +150,7 @@ body{background:#fff;display:flex;justify-content:center;padding:0;}
     {% if item.icon %}<img class="bi-icon" src="{{ item.icon }}" alt="" onerror="this.style.display='none'">{% else %}<div style="width:16px"></div>{% endif %}
     <span class="bi-name">{{ item.name }}</span>
     <span class="bi-num">×{{ item.count }}</span>
-    <span class="bi-profit {{ 'profit-plus' if item.profit >= 0 else 'profit-minus' }}">{{ '%+d'|format(item.profit) }}</span>
+    <span class="bi-profit {{ 'profit-bg-plus' if item.profit >= 0 else 'profit-bg-minus' }} {{ 'profit-plus' if item.profit >= 0 else 'profit-minus' }}">{{ '%+d'|format(item.profit) }}</span>
   </div>
 {% endfor %}</div>
 {% endfor %}{% endif %}
